@@ -309,7 +309,20 @@ export const mockConsultations = [
   },
 ]
 
-export const mockReferrals = [
+type Referral = {
+  id: string
+  status: string
+  reason: string
+  urgency: string
+  referralDate: string
+  completedDate: string | null
+  notes?: string
+  referringProvider: { firstName: string; lastName: string }
+  receivingProvider: { firstName: string; lastName: string; specialization: string } | null
+  facility: string
+}
+
+export const mockReferrals: Referral[] = [
   {
     id: 'ref-001',
     status: 'COMPLETED',
