@@ -1,0 +1,617 @@
+// This is your Prisma schema file for EHealth Africa
+// Learn more about it at https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+// ─── ENUMS ───────────────────────────────────────────────────────────────────
+
+enum Role {
+  PATIENT
+  DOCTOR
+  NURSE
+  PHARMACIST
+  LAB_TECHNICIAN
+  ADMIN
+  PUBLIC_HEALTH_OFFICER
+}
+
+enum Gender {
+  MALE
+  FEMALE
+  OTHER
+}
+
+enum BloodType {
+  A_POSITIVE
+  A_NEGATIVE
+  B_POSITIVE
+  B_NEGATIVE
+  AB_POSITIVE
+  AB_NEGATIVE
+  O_POSITIVE
+  O_NEGATIVE
+}
+
+enum PrescriptionStatus {
+  PENDING
+  DISPENSED
+  PARTIALLY_DISPENSED
+  CANCELLED
+  EXPIRED
+}
+
+enum AppointmentStatus {
+  SCHEDULED
+  CONFIRMED
+  IN_PROGRESS
+  COMPLETED
+  CANCELLED
+  NO_SHOW
+}
+
+enum AppointmentType {
+  IN_PERSON
+  TELEMEDICINE
+  HOME_VISIT
+}
+
+enum LabOrderStatus {
+  ORDERED
+  SAMPLE_COLLECTED
+  IN_PROGRESS
+  COMPLETED
+  CANCELLED
+}
+
+enum ReferralStatus {
+  PENDING
+  ACCEPTED
+  IN_PROGRESS
+  COMPLETED
+  DECLINED
+}
+
+enum InsuranceClaimStatus {
+  SUBMITTED
+  UNDER_REVIEW
+  APPROVED
+  REJECTED
+  PAID
+}
+
+// ─── USER & IDENTITY ─────────────────────────────────────────────────────────
+
+model User {
+  id            String   @id @default(cuid())
+  email         String   @unique
+  phone         String?  @unique
+  passwordHash  String
+  role          Role     @default(PATIENT)
+  isActive      Boolean  @default(true)
+  mfaEnabled    Boolean  @default(false)
+  mfaSecret     String?
+  lastLoginAt   DateTime?
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+
+  patient       Patient?
+  provider      HealthcareProvider?
+  pharmacist    Pharmacist?
+  auditLogs     AuditLog[]
+  sessions      UserSession[]
+
+  @@map("users")
+}
+
+model UserSession {
+  id         String   @id @default(cuid())
+  userId     String
+  token      String   @unique
+  ipAddress  String?
+  userAgent  String?
+  expiresAt  DateTime
+  createdAt  DateTime @default(now())
+
+  user       User     @relation(fields: [userId], references: [id])
+
+  @@map("user_sessions")
+}
+
+model Patient {
+  id                String    @id @default(cuid())
+  userId            String    @unique
+  healthId          String    @unique  // National Health ID (e.g., GH-2024-0001234)
+  nationalId        String?   @unique
+  firstName         String
+  lastName          String
+  dateOfBirth       DateTime
+  gender            Gender
+  bloodType         BloodType?
+  nationality       String    @default("Ghana")
+  region            String?
+  district          String?
+  address           String?
+  emergencyContact  Json?     // { name, phone, relation }
+  photo             String?
+  createdAt         DateTime  @default(now())
+  updatedAt         DateTime  @updatedAt
+
+  user              User      @relation(fields: [userId], references: [id])
+  consultations     Consultation[]
+  diagnoses         Diagnosis[]
+  prescriptions     Prescription[]
+  labOrders         LabOrder[]
+  vaccinations      Vaccination[]
+  allergies         Allergy[]
+  hospitalizations  Hospitalization[]
+  appointments      Appointment[]
+  referrals         Referral[]        @relation("PatientReferrals")
+  vitals            VitalSign[]
+  insuranceClaims   InsuranceClaim[]
+  consentRecords    ConsentRecord[]
+  carePlans         CarePlan[]
+  wearableData      WearableData[]
+
+  @@map("patients")
+}
+
+model HealthcareProvider {
+  id              String   @id @default(cuid())
+  userId          String   @unique
+  licenseNumber   String   @unique
+  firstName       String
+  lastName        String
+  specialization  String
+  facilityId      String?
+  isVerified      Boolean  @default(false)
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+
+  user            User     @relation(fields: [userId], references: [id])
+  facility        Facility? @relation(fields: [facilityId], references: [id])
+  consultations   Consultation[]
+  prescriptions   Prescription[]
+  labOrders       LabOrder[]
+  referralsFrom   Referral[] @relation("ReferringProvider")
+  referralsTo     Referral[] @relation("ReceivingProvider")
+  appointments    Appointment[]
+
+  @@map("healthcare_providers")
+}
+
+model Facility {
+  id          String   @id @default(cuid())
+  name        String
+  type        String   // hospital, clinic, lab, pharmacy
+  region      String
+  district    String
+  address     String
+  phone       String?
+  email       String?
+  latitude    Float?
+  longitude   Float?
+  isActive    Boolean  @default(true)
+  createdAt   DateTime @default(now())
+
+  providers   HealthcareProvider[]
+  pharmacists Pharmacist[]
+
+  @@map("facilities")
+}
+
+model Pharmacist {
+  id            String   @id @default(cuid())
+  userId        String   @unique
+  licenseNumber String   @unique
+  firstName     String
+  lastName      String
+  facilityId    String?
+  createdAt     DateTime @default(now())
+
+  user          User       @relation(fields: [userId], references: [id])
+  facility      Facility?  @relation(fields: [facilityId], references: [id])
+  dispensings   Dispensing[]
+
+  @@map("pharmacists")
+}
+
+// ─── CLINICAL RECORDS ────────────────────────────────────────────────────────
+
+model Consultation {
+  id              String   @id @default(cuid())
+  patientId       String
+  providerId      String
+  facilityId      String?
+  date            DateTime @default(now())
+  chiefComplaint  String
+  historyOfPresentIllness String?
+  physicalExamination     String?
+  assessment      String?
+  plan            String?
+  notes           String?
+  isTelemedicine  Boolean  @default(false)
+  followUpDate    DateTime?
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+
+  patient         Patient              @relation(fields: [patientId], references: [id])
+  provider        HealthcareProvider   @relation(fields: [providerId], references: [id])
+  diagnoses       Diagnosis[]
+  prescriptions   Prescription[]
+  labOrders       LabOrder[]
+
+  @@map("consultations")
+}
+
+model Diagnosis {
+  id            String   @id @default(cuid())
+  patientId     String
+  consultationId String?
+  icdCode       String   // ICD-10 code
+  description   String
+  type          String   // primary, secondary, chronic
+  onsetDate     DateTime?
+  resolvedDate  DateTime?
+  isActive      Boolean  @default(true)
+  notes         String?
+  createdAt     DateTime @default(now())
+
+  patient       Patient      @relation(fields: [patientId], references: [id])
+  consultation  Consultation? @relation(fields: [consultationId], references: [id])
+
+  @@map("diagnoses")
+}
+
+model VitalSign {
+  id              String   @id @default(cuid())
+  patientId       String
+  recordedAt      DateTime @default(now())
+  bloodPressureSystolic   Int?
+  bloodPressureDiastolic  Int?
+  heartRate       Int?
+  temperature     Float?   // Celsius
+  oxygenSaturation Int?
+  respiratoryRate Int?
+  weight          Float?   // kg
+  height          Float?   // cm
+  bmi             Float?
+  bloodGlucose    Float?   // mmol/L
+  source          String   @default("manual") // manual, wearable, device
+
+  patient         Patient  @relation(fields: [patientId], references: [id])
+
+  @@map("vital_signs")
+}
+
+model Allergy {
+  id            String   @id @default(cuid())
+  patientId     String
+  allergen      String
+  type          String   // drug, food, environmental
+  severity      String   // mild, moderate, severe, life-threatening
+  reaction      String?
+  onsetDate     DateTime?
+  isActive      Boolean  @default(true)
+  createdAt     DateTime @default(now())
+
+  patient       Patient  @relation(fields: [patientId], references: [id])
+
+  @@map("allergies")
+}
+
+model Vaccination {
+  id            String   @id @default(cuid())
+  patientId     String
+  vaccineName   String
+  vaccineCode   String?
+  doseNumber    Int      @default(1)
+  administeredAt DateTime
+  batchNumber   String?
+  facilityId    String?
+  nextDoseDate  DateTime?
+  createdAt     DateTime @default(now())
+
+  patient       Patient  @relation(fields: [patientId], references: [id])
+
+  @@map("vaccinations")
+}
+
+model Hospitalization {
+  id              String    @id @default(cuid())
+  patientId       String
+  facilityId      String
+  admissionDate   DateTime
+  dischargeDate   DateTime?
+  admissionReason String
+  dischargeSummary String?
+  ward            String?
+  bed             String?
+  attendingDoctor String?
+  createdAt       DateTime  @default(now())
+
+  patient         Patient   @relation(fields: [patientId], references: [id])
+
+  @@map("hospitalizations")
+}
+
+// ─── PRESCRIPTIONS ───────────────────────────────────────────────────────────
+
+model Prescription {
+  id              String             @id @default(cuid())
+  prescriptionCode String           @unique  // Unique code for QR
+  patientId       String
+  providerId      String
+  consultationId  String?
+  status          PrescriptionStatus @default(PENDING)
+  issuedAt        DateTime           @default(now())
+  expiresAt       DateTime
+  notes           String?
+  qrCode          String?            // Base64 QR code image
+  digitalToken    String             @unique @default(cuid())
+  refillsAllowed  Int                @default(0)
+  refillsUsed     Int                @default(0)
+  createdAt       DateTime           @default(now())
+  updatedAt       DateTime           @updatedAt
+
+  patient         Patient            @relation(fields: [patientId], references: [id])
+  provider        HealthcareProvider @relation(fields: [providerId], references: [id])
+  consultation    Consultation?      @relation(fields: [consultationId], references: [id])
+  medications     PrescriptionItem[]
+  dispensings     Dispensing[]
+  insuranceClaims InsuranceClaim[]
+
+  @@map("prescriptions")
+}
+
+model PrescriptionItem {
+  id              String   @id @default(cuid())
+  prescriptionId  String
+  medicationName  String
+  genericName     String?
+  dosage          String
+  form            String   // tablet, capsule, syrup, injection
+  frequency       String   // twice daily, three times daily
+  duration        String   // 7 days, 1 month
+  quantity        Int
+  instructions    String?
+  interactions    Json?    // Drug interactions detected
+
+  prescription    Prescription @relation(fields: [prescriptionId], references: [id])
+
+  @@map("prescription_items")
+}
+
+model Dispensing {
+  id              String   @id @default(cuid())
+  prescriptionId  String
+  pharmacistId    String
+  dispensedAt     DateTime @default(now())
+  items           Json     // Items dispensed
+  notes           String?
+
+  prescription    Prescription @relation(fields: [prescriptionId], references: [id])
+  pharmacist      Pharmacist   @relation(fields: [pharmacistId], references: [id])
+
+  @@map("dispensings")
+}
+
+// ─── LABORATORY ──────────────────────────────────────────────────────────────
+
+model LabOrder {
+  id              String        @id @default(cuid())
+  patientId       String
+  providerId      String
+  consultationId  String?
+  status          LabOrderStatus @default(ORDERED)
+  urgency         String        @default("routine") // routine, urgent, stat
+  orderDate       DateTime      @default(now())
+  collectionDate  DateTime?
+  completedDate   DateTime?
+  facilityId      String?
+  notes           String?
+  createdAt       DateTime      @default(now())
+
+  patient         Patient            @relation(fields: [patientId], references: [id])
+  provider        HealthcareProvider @relation(fields: [providerId], references: [id])
+  consultation    Consultation?      @relation(fields: [consultationId], references: [id])
+  tests           LabTest[]
+
+  @@map("lab_orders")
+}
+
+model LabTest {
+  id            String   @id @default(cuid())
+  labOrderId    String
+  testName      String
+  testCode      String?
+  result        String?
+  unit          String?
+  referenceRange String?
+  isAbnormal    Boolean?
+  interpretation String?
+  completedAt   DateTime?
+  imagingUrl    String?  // For imaging results
+
+  labOrder      LabOrder @relation(fields: [labOrderId], references: [id])
+
+  @@map("lab_tests")
+}
+
+// ─── APPOINTMENTS ────────────────────────────────────────────────────────────
+
+model Appointment {
+  id              String            @id @default(cuid())
+  patientId       String
+  providerId      String
+  facilityId      String?
+  type            AppointmentType   @default(IN_PERSON)
+  status          AppointmentStatus @default(SCHEDULED)
+  scheduledAt     DateTime
+  duration        Int               @default(30) // minutes
+  reason          String
+  notes           String?
+  meetingLink     String?           // For telemedicine
+  reminderSent    Boolean           @default(false)
+  createdAt       DateTime          @default(now())
+  updatedAt       DateTime          @updatedAt
+
+  patient         Patient            @relation(fields: [patientId], references: [id])
+  provider        HealthcareProvider @relation(fields: [providerId], references: [id])
+
+  @@map("appointments")
+}
+
+// ─── CARE COORDINATION ───────────────────────────────────────────────────────
+
+model Referral {
+  id              String         @id @default(cuid())
+  patientId       String
+  referringProviderId  String
+  receivingProviderId  String?
+  receivingFacilityId  String?
+  status          ReferralStatus @default(PENDING)
+  reason          String
+  urgency         String         @default("routine")
+  notes           String?
+  referralDate    DateTime       @default(now())
+  acceptedDate    DateTime?
+  completedDate   DateTime?
+  createdAt       DateTime       @default(now())
+
+  patient         Patient            @relation("PatientReferrals", fields: [patientId], references: [id])
+  referringProvider HealthcareProvider @relation("ReferringProvider", fields: [referringProviderId], references: [id])
+  receivingProvider HealthcareProvider? @relation("ReceivingProvider", fields: [receivingProviderId], references: [id])
+
+  @@map("referrals")
+}
+
+model CarePlan {
+  id              String   @id @default(cuid())
+  patientId       String
+  title           String
+  description     String
+  goals           Json     // Array of goals
+  interventions   Json     // Array of interventions
+  startDate       DateTime
+  endDate         DateTime?
+  isActive        Boolean  @default(true)
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+
+  patient         Patient  @relation(fields: [patientId], references: [id])
+
+  @@map("care_plans")
+}
+
+// ─── INSURANCE ───────────────────────────────────────────────────────────────
+
+model InsuranceClaim {
+  id              String               @id @default(cuid())
+  patientId       String
+  prescriptionId  String?
+  insuranceScheme String               // NHIS, private, etc.
+  memberId        String
+  claimAmount     Float
+  approvedAmount  Float?
+  status          InsuranceClaimStatus @default(SUBMITTED)
+  submittedAt     DateTime             @default(now())
+  processedAt     DateTime?
+  rejectionReason String?
+  createdAt       DateTime             @default(now())
+
+  patient         Patient      @relation(fields: [patientId], references: [id])
+  prescription    Prescription? @relation(fields: [prescriptionId], references: [id])
+
+  @@map("insurance_claims")
+}
+
+// ─── WEARABLES & IoT ─────────────────────────────────────────────────────────
+
+model WearableData {
+  id          String   @id @default(cuid())
+  patientId   String
+  deviceType  String   // fitbit, apple_watch, glucose_monitor, bp_monitor
+  deviceId    String?
+  dataType    String   // heart_rate, steps, sleep, glucose, blood_pressure
+  value       Json
+  recordedAt  DateTime
+  createdAt   DateTime @default(now())
+
+  patient     Patient  @relation(fields: [patientId], references: [id])
+
+  @@map("wearable_data")
+}
+
+// ─── SECURITY & AUDIT ────────────────────────────────────────────────────────
+
+model AuditLog {
+  id          String   @id @default(cuid())
+  userId      String
+  action      String
+  resource    String
+  resourceId  String?
+  details     Json?
+  ipAddress   String?
+  userAgent   String?
+  createdAt   DateTime @default(now())
+
+  user        User     @relation(fields: [userId], references: [id])
+
+  @@map("audit_logs")
+}
+
+model ConsentRecord {
+  id              String   @id @default(cuid())
+  patientId       String
+  consentType     String   // data_sharing, research, telemedicine
+  grantedTo       String?  // provider or organization
+  isGranted       Boolean
+  expiresAt       DateTime?
+  createdAt       DateTime @default(now())
+
+  patient         Patient  @relation(fields: [patientId], references: [id])
+
+  @@map("consent_records")
+}
+
+// ─── PUBLIC HEALTH ───────────────────────────────────────────────────────────
+
+model DiseaseReport {
+  id            String   @id @default(cuid())
+  diseaseCode   String
+  diseaseName   String
+  region        String
+  district      String?
+  caseCount     Int
+  reportDate    DateTime
+  severity      String   // low, medium, high, critical
+  isOutbreak    Boolean  @default(false)
+  notes         String?
+  createdAt     DateTime @default(now())
+
+  @@map("disease_reports")
+}
+
+model DrugInventory {
+  id              String   @id @default(cuid())
+  facilityId      String
+  drugName        String
+  genericName     String?
+  batchNumber     String
+  quantity        Int
+  unitPrice       Float?
+  expiryDate      DateTime
+  supplierName    String?
+  trackingCode    String?  // For track-and-trace
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+
+  @@map("drug_inventory")
+}
