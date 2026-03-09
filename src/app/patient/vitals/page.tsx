@@ -9,7 +9,7 @@ export default function VitalsPage() {
   return (
     <div className="animate-fade-in">
       <TopBar title="Vital Signs" subtitle="Track your health measurements over time" />
-      <div className="p-6 space-y-6">
+      <div className="p-4 lg:p-6 space-y-4 lg:space-y-6">
         {/* Latest reading */}
         <Card className="bg-gradient-to-r from-green-700 to-emerald-600 text-white">
           <div className="flex items-center justify-between mb-4">
@@ -42,7 +42,7 @@ export default function VitalsPage() {
         <Card>
           <CardHeader title="Vital Signs History" icon={<span>📈</span>} />
           <div className="overflow-x-auto">
-            <table className="w-full text-sm">
+            <table className="w-full text-sm min-w-[640px]">
               <thead>
                 <tr className="bg-gray-50 text-xs text-gray-500 uppercase tracking-wide">
                   <th className="text-left px-4 py-2.5 rounded-l-lg">Date & Time</th>

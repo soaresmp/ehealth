@@ -24,7 +24,7 @@ export default function ProviderLabsPage() {
         subtitle="Order tests and view patient results"
         action={<Button size="sm" variant="primary">+ New Lab Order</Button>}
       />
-      <div className="p-6 space-y-6">
+      <div className="p-4 lg:p-6 space-y-4 lg:space-y-6">
         {/* Order form */}
         <Card>
           <CardHeader title="New Laboratory Order" icon={<span>🔬</span>} />

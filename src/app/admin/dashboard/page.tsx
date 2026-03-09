@@ -21,7 +21,7 @@ export default function AdminDashboard() {
           </div>
         }
       />
-      <div className="p-6 space-y-6">
+      <div className="p-4 lg:p-6 space-y-4 lg:space-y-6">
         {/* National stats */}
         <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
           <StatCard title="Registered Patients" value="3.2M" trend={{ value: 12, label: 'vs last year' }} icon={<span>👥</span>} color="green" />
@@ -116,7 +116,7 @@ export default function AdminDashboard() {
         <Card>
           <CardHeader title="Regional Health Dashboard" icon={<span>🗺️</span>} />
           <div className="overflow-x-auto">
-            <table className="w-full text-sm">
+            <table className="w-full text-sm min-w-[560px]">
               <thead>
                 <tr className="text-xs text-gray-500 uppercase tracking-wide bg-gray-50">
                   <th className="text-left px-4 py-2.5 rounded-l-lg">Region</th>

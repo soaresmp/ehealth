@@ -14,7 +14,7 @@ export default function TelemedicinePage() {
   return (
     <div className="animate-fade-in">
       <TopBar title="Telemedicine" subtitle="Video consultations and remote care" />
-      <div className="p-6 space-y-6">
+      <div className="p-4 lg:p-6 space-y-4 lg:space-y-6">
         {/* Active session banner */}
         <div className="bg-green-700 rounded-2xl p-6 text-white">
           <div className="flex flex-col md:flex-row items-center justify-between gap-4">

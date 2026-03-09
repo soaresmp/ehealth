@@ -9,7 +9,7 @@ export default function HealthIdPage() {
   return (
     <div className="animate-fade-in">
       <TopBar title="Digital Health ID" subtitle="Your secure national health identity card" />
-      <div className="p-6 space-y-6">
+      <div className="p-4 lg:p-6 space-y-4 lg:space-y-6">
         {/* Digital ID card */}
         <div className="max-w-2xl mx-auto">
           <div className="relative bg-gradient-to-br from-green-800 via-green-700 to-emerald-600 rounded-3xl p-8 text-white overflow-hidden shadow-2xl">

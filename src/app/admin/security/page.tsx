@@ -22,7 +22,7 @@ export default function SecurityPage() {
   return (
     <div className="animate-fade-in">
       <TopBar title="Security & Privacy" subtitle="Data governance, access control, and audit logs" />
-      <div className="p-6 space-y-6">
+      <div className="p-4 lg:p-6 space-y-4 lg:space-y-6">
         {/* Security status */}
         <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
           {securityMetrics.map(m => (
@@ -101,7 +101,7 @@ export default function SecurityPage() {
             action={<Button size="sm" variant="outline">Export Logs</Button>}
           />
           <div className="overflow-x-auto">
-            <table className="w-full text-sm">
+            <table className="w-full text-sm min-w-[560px]">
               <thead>
                 <tr className="bg-gray-50 text-xs text-gray-500 uppercase">
                   <th className="text-left px-4 py-2.5 rounded-l-lg">Time</th>

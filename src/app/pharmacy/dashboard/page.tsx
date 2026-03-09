@@ -25,7 +25,7 @@ export default function PharmacyDashboard() {
           </div>
         }
       />
-      <div className="p-6 space-y-6">
+      <div className="p-4 lg:p-6 space-y-4 lg:space-y-6">
         {/* Stats */}
         <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
           <StatCard title="Pending Prescriptions" value={mockPharmacyPrescriptions.length} subtitle="Awaiting dispensing" icon={<span>💊</span>} color="orange" />

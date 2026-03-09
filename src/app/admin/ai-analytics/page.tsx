@@ -79,7 +79,7 @@ export default function AIAnalyticsPage() {
   return (
     <div className="animate-fade-in">
       <TopBar title="AI & Advanced Analytics" subtitle="Machine learning models and predictive health intelligence" />
-      <div className="p-6 space-y-6">
+      <div className="p-4 lg:p-6 space-y-4 lg:space-y-6">
         {/* AI overview */}
         <div className="gradient-health rounded-2xl p-6 text-white">
           <div className="flex items-center gap-4 mb-4">

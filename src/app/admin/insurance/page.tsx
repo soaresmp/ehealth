@@ -22,7 +22,7 @@ export default function InsurancePage() {
   return (
     <div className="animate-fade-in">
       <TopBar title="Insurance & Reimbursement" subtitle="NHIS and private insurance claim management" />
-      <div className="p-6 space-y-6">
+      <div className="p-4 lg:p-6 space-y-4 lg:space-y-6">
         {/* Summary */}
         <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
           {[
@@ -55,7 +55,8 @@ export default function InsurancePage() {
 
         <Card>
           <CardHeader title="Recent Insurance Claims" icon={<span>🏦</span>} />
-          <table className="w-full text-sm">
+          <div className="overflow-x-auto">
+          <table className="w-full text-sm min-w-[560px]">
             <thead>
               <tr className="bg-gray-50 text-xs text-gray-500 uppercase">
                 <th className="text-left px-4 py-2.5">Claim ID</th>
@@ -89,6 +90,7 @@ export default function InsurancePage() {
               ))}
             </tbody>
           </table>
+          </div>
         </Card>
       </div>
     </div>

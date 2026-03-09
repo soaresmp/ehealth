@@ -34,7 +34,7 @@ export default function ProviderDashboard() {
           </Button>
         }
       />
-      <div className="p-6 space-y-6">
+      <div className="p-4 lg:p-6 space-y-4 lg:space-y-6">
         {/* Stats */}
         <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
           <StatCard title="Today's Appointments" value={mockProviderDashboard.todayAppointments} subtitle="3 completed, 3 pending" icon={<span>📅</span>} color="blue" />
@@ -43,7 +43,7 @@ export default function ProviderDashboard() {
           <StatCard title="Open Referrals" value={mockProviderDashboard.pendingReferrals} subtitle="In progress" icon={<span>🔄</span>} color="green" />
         </div>
 
-        <div className="grid lg:grid-cols-5 gap-6">
+        <div className="grid grid-cols-1 lg:grid-cols-5 gap-6">
           {/* Today's schedule */}
           <Card className="lg:col-span-3">
             <CardHeader
@@ -54,7 +54,7 @@ export default function ProviderDashboard() {
             />
             <div className="space-y-2">
               {todaySchedule.map((s, i) => (
-                <div key={i} className={`flex items-center gap-3 p-3 rounded-xl border transition-colors ${
+                <div key={i} className={`flex items-start sm:items-center gap-3 p-3 rounded-xl border transition-colors ${
                   s.status === 'IN_PROGRESS' ? 'border-green-300 bg-green-50' :
                   s.status === 'COMPLETED' ? 'border-gray-100 bg-gray-50 opacity-60' :
                   'border-gray-100 hover:bg-gray-50'
@@ -118,7 +118,7 @@ export default function ProviderDashboard() {
             action={<Button href="/provider/patients" size="sm" variant="ghost">View All Patients</Button>}
           />
           <div className="overflow-x-auto">
-            <table className="w-full text-sm">
+            <table className="w-full text-sm min-w-[480px]">
               <thead>
                 <tr className="text-xs text-gray-500 uppercase tracking-wide border-b border-gray-100">
                   <th className="text-left py-2 px-3">Patient</th>

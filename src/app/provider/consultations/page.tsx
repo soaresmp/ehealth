@@ -13,7 +13,7 @@ export default function ConsultationsPage() {
         subtitle="Document and manage patient consultations"
         action={<Button size="sm" variant="primary">+ New Consultation</Button>}
       />
-      <div className="p-6 space-y-6">
+      <div className="p-4 lg:p-6 space-y-4 lg:space-y-6">
         {/* Active consultation workspace */}
         <Card className="border-green-300 bg-green-50">
           <div className="flex items-center gap-3">

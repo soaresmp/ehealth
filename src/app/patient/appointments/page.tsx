@@ -16,7 +16,7 @@ export default function AppointmentsPage() {
         subtitle="Manage your healthcare appointments"
         action={<Button size="sm">📅 Book New Appointment</Button>}
       />
-      <div className="p-6 space-y-6">
+      <div className="p-4 lg:p-6 space-y-4 lg:space-y-6">
         {/* Upcoming */}
         <Card>
           <CardHeader title="Upcoming Appointments" icon={<span>📅</span>} />

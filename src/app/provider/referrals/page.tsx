@@ -13,7 +13,7 @@ export default function ProviderReferralsPage() {
         subtitle="Create and track patient referrals"
         action={<Button size="sm" variant="primary">+ New Referral</Button>}
       />
-      <div className="p-6 space-y-6">
+      <div className="p-4 lg:p-6 space-y-4 lg:space-y-6">
         {/* Create referral form */}
         <Card>
           <CardHeader title="Create Referral" icon={<span>🔄</span>} />

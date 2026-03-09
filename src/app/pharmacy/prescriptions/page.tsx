@@ -18,7 +18,7 @@ export default function PharmacyPrescriptionsPage() {
           </div>
         }
       />
-      <div className="p-6 space-y-4">
+      <div className="p-4 lg:p-6 space-y-4">
         <div className="flex gap-3">
           <input
             type="text"

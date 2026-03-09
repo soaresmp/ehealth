@@ -9,7 +9,7 @@ export default function LabResultsPage() {
   return (
     <div className="animate-fade-in">
       <TopBar title="Lab Results" subtitle="Laboratory tests and diagnostic reports" />
-      <div className="p-6 space-y-6">
+      <div className="p-4 lg:p-6 space-y-4 lg:space-y-6">
         {/* Summary */}
         <div className="grid grid-cols-3 gap-4">
           {[
@@ -51,7 +51,7 @@ export default function LabResultsPage() {
 
               {/* Tests */}
               <div className="overflow-x-auto">
-                <table className="w-full text-sm">
+                <table className="w-full text-sm min-w-[480px]">
                   <thead>
                     <tr className="bg-gray-50 text-xs text-gray-500 uppercase tracking-wide">
                       <th className="text-left px-3 py-2 rounded-l-lg">Test</th>

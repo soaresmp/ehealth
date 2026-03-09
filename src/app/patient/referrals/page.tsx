@@ -9,7 +9,7 @@ export default function PatientReferralsPage() {
   return (
     <div className="animate-fade-in">
       <TopBar title="Referrals" subtitle="Track your specialist referrals and appointments" />
-      <div className="p-6 space-y-6">
+      <div className="p-4 lg:p-6 space-y-4 lg:space-y-6">
         <div className="space-y-4">
           {mockReferrals.map(ref => (
             <Card key={ref.id}>

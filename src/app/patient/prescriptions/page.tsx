@@ -64,26 +64,25 @@ export default function PrescriptionsPage() {
                     </div>
                   </div>
 
-                  {/* Medications table */}
-                  <div className="bg-gray-50 rounded-xl overflow-hidden">
-                    <div className="grid grid-cols-5 px-3 py-2 text-xs font-semibold text-gray-500 uppercase tracking-wide border-b border-gray-100">
+                  {/* Medications — card list on mobile, table on desktop */}
+                  <div className="space-y-2 sm:space-y-0 sm:bg-gray-50 sm:rounded-xl sm:overflow-hidden">
+                    <div className="hidden sm:grid grid-cols-5 px-3 py-2 text-xs font-semibold text-gray-500 uppercase tracking-wide border-b border-gray-100">
                       <span className="col-span-2">Medication</span>
                       <span>Dosage & Form</span>
                       <span>Frequency</span>
                       <span>Duration</span>
                     </div>
                     {rx.medications.map((med, i) => (
-                      <div key={i} className={`grid grid-cols-5 px-3 py-2.5 text-sm ${i % 2 === 0 ? 'bg-white' : 'bg-gray-50'}`}>
-                        <div className="col-span-2">
+                      <div key={i} className={`sm:grid sm:grid-cols-5 px-3 py-2.5 text-sm rounded-xl sm:rounded-none border border-gray-100 sm:border-0 ${i % 2 === 0 ? 'bg-white' : 'bg-gray-50'}`}>
+                        <div className="col-span-2 mb-1 sm:mb-0">
                           <p className="font-medium text-gray-900">{med.medicationName}</p>
                           {med.genericName && <p className="text-xs text-gray-400">{med.genericName}</p>}
                         </div>
-                        <div>
-                          <p>{med.dosage}</p>
-                          <p className="text-xs text-gray-400 capitalize">{med.form}</p>
+                        <div className="text-xs sm:text-sm text-gray-500 sm:text-inherit">
+                          <span className="sm:hidden text-gray-400">Dose: </span>{med.dosage} <span className="capitalize">{med.form}</span>
                         </div>
-                        <p className="text-gray-600">{med.frequency}</p>
-                        <p className="text-gray-600">{med.duration}</p>
+                        <p className="text-xs sm:text-sm text-gray-600"><span className="sm:hidden text-gray-400">Freq: </span>{med.frequency}</p>
+                        <p className="text-xs sm:text-sm text-gray-600"><span className="sm:hidden text-gray-400">Duration: </span>{med.duration}</p>
                       </div>
                     ))}
                   </div>

@@ -13,7 +13,7 @@ export default function ProviderPrescriptionsPage() {
         subtitle="Issue and manage digital prescriptions"
         action={<Button size="sm" variant="primary">+ New Prescription</Button>}
       />
-      <div className="p-6 space-y-6">
+      <div className="p-4 lg:p-6 space-y-4 lg:space-y-6">
         {/* New prescription form */}
         <Card>
           <CardHeader title="Issue New e-Prescription" icon={<span>💊</span>} />

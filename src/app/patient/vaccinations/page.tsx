@@ -14,7 +14,7 @@ export default function VaccinationsPage() {
   return (
     <div className="animate-fade-in">
       <TopBar title="Vaccination Records" subtitle="Complete immunization history and upcoming vaccines" />
-      <div className="p-6 space-y-6">
+      <div className="p-4 lg:p-6 space-y-4 lg:space-y-6">
         {/* International vaccine certificate */}
         <div className="bg-gradient-to-r from-green-700 to-teal-600 rounded-2xl p-6 text-white">
           <div className="flex items-center justify-between">

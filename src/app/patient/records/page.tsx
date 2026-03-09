@@ -22,7 +22,7 @@ export default function MedicalRecordsPage() {
   return (
     <div className="animate-fade-in">
       <TopBar title="Medical History" subtitle="Your complete lifetime health record" />
-      <div className="p-6 space-y-6">
+      <div className="p-4 lg:p-6 space-y-4 lg:space-y-6">
         {/* Timeline header */}
         <Card className="bg-gradient-to-r from-green-700 to-emerald-600 text-white">
           <div className="flex items-center justify-between">

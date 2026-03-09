@@ -20,7 +20,7 @@ export default function PatientsPage() {
         subtitle="Manage patient records and care"
         action={<Button size="sm" variant="primary">+ New Patient</Button>}
       />
-      <div className="p-6 space-y-6">
+      <div className="p-4 lg:p-6 space-y-4 lg:space-y-6">
         {/* Search */}
         <Card padding="sm">
           <div className="flex gap-3">
@@ -44,13 +44,14 @@ export default function PatientsPage() {
 
         {/* Patient list */}
         <Card padding="none">
-          <div className="px-6 py-4 border-b border-gray-100 flex items-center justify-between">
+          <div className="px-4 lg:px-6 py-4 border-b border-gray-100 flex items-center justify-between">
             <p className="font-semibold text-gray-900">{allPatients.length} patients</p>
             <div className="flex gap-2">
               <button className="text-xs text-gray-500 hover:text-gray-700 px-2 py-1 rounded hover:bg-gray-100">⬇ Export</button>
             </div>
           </div>
-          <table className="w-full text-sm">
+          <div className="overflow-x-auto">
+          <table className="w-full text-sm min-w-[640px]">
             <thead>
               <tr className="text-xs text-gray-500 uppercase tracking-wide bg-gray-50">
                 <th className="text-left py-3 px-6">Patient</th>
@@ -98,6 +99,7 @@ export default function PatientsPage() {
               ))}
             </tbody>
           </table>
+          </div>
         </Card>
       </div>
     </div>

@@ -1,10 +1,10 @@
+import { ResponsiveLayout } from '@/components/layout/ResponsiveLayout'
 import { ProviderSidebar } from '@/components/layout/ProviderSidebar'
 
 export default function ProviderLayout({ children }: { children: React.ReactNode }) {
   return (
-    <div className="flex h-screen bg-gray-50 overflow-hidden">
-      <ProviderSidebar />
-      <main className="flex-1 overflow-y-auto">{children}</main>
-    </div>
+    <ResponsiveLayout sidebar={<ProviderSidebar />}>
+      {children}
+    </ResponsiveLayout>
   )
 }

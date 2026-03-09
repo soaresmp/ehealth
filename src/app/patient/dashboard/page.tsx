@@ -23,12 +23,12 @@ export default function PatientDashboard() {
         }
       />
 
-      <div className="p-6 space-y-6">
+      <div className="p-4 lg:p-6 space-y-4 lg:space-y-6">
         {/* Health ID Card */}
-        <div className="gradient-health rounded-2xl p-6 text-white">
+        <div className="gradient-health rounded-2xl p-4 lg:p-6 text-white">
           <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
-            <div className="flex items-center gap-4">
-              <div className="w-16 h-16 rounded-2xl bg-white/20 flex items-center justify-center text-3xl font-bold">
+            <div className="flex items-center gap-3">
+              <div className="w-12 h-12 lg:w-16 lg:h-16 rounded-2xl bg-white/20 flex items-center justify-center text-2xl lg:text-3xl font-bold flex-shrink-0">
                 {mockPatient.firstName[0]}{mockPatient.lastName[0]}
               </div>
               <div>
@@ -37,7 +37,7 @@ export default function PatientDashboard() {
                 <p className="font-mono text-blue-200 text-sm">{mockPatient.healthId}</p>
               </div>
             </div>
-            <div className="flex flex-wrap gap-4">
+            <div className="grid grid-cols-2 sm:flex sm:flex-wrap gap-2 sm:gap-4">
               {[
                 { label: 'Age', value: `${calculateAge(mockPatient.dateOfBirth)} yrs` },
                 { label: 'Blood Type', value: getBloodTypeLabel(mockPatient.bloodType!) },
@@ -140,7 +140,7 @@ export default function PatientDashboard() {
           {/* Latest vitals */}
           <Card className="lg:col-span-2">
             <CardHeader title="Latest Vital Signs" subtitle={`Recorded: ${formatDate(latestVitals.recordedAt, 'time')}`} icon={<span>❤️</span>} />
-            <div className="grid grid-cols-3 gap-3">
+            <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
               {[
                 { label: 'Blood Pressure', value: `${latestVitals.bloodPressureSystolic}/${latestVitals.bloodPressureDiastolic}`, unit: 'mmHg', normal: true, icon: '🩸' },
                 { label: 'Heart Rate', value: latestVitals.heartRate, unit: 'bpm', normal: true, icon: '💓' },

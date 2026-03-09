@@ -15,7 +15,7 @@ export default function WearablesPage() {
   return (
     <div className="animate-fade-in">
       <TopBar title="Health Monitoring" subtitle="Wearable devices and continuous health tracking" />
-      <div className="p-6 space-y-6">
+      <div className="p-4 lg:p-6 space-y-4 lg:space-y-6">
         {/* Connected devices */}
         <div>
           <h3 className="font-semibold text-gray-900 mb-3">Connected Devices</h3>
@@ -70,7 +70,7 @@ export default function WearablesPage() {
         <Card>
           <CardHeader title="7-Day Health Trends" subtitle="Continuous monitoring from connected devices" icon={<span>📈</span>} />
           <div className="overflow-x-auto">
-            <table className="w-full text-sm">
+            <table className="w-full text-sm min-w-[480px]">
               <thead>
                 <tr className="bg-gray-50 text-xs text-gray-500 uppercase">
                   <th className="text-left px-3 py-2 rounded-l-lg">Date</th>

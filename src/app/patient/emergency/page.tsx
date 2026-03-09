@@ -7,7 +7,7 @@ export default function EmergencyPage() {
   return (
     <div className="animate-fade-in">
       <TopBar title="Emergency Information" subtitle="Critical health data for emergency responders" />
-      <div className="p-6 space-y-6">
+      <div className="p-4 lg:p-6 space-y-4 lg:space-y-6">
         {/* Emergency card */}
         <div className="bg-red-600 rounded-2xl p-6 text-white">
           <div className="flex items-start justify-between">
