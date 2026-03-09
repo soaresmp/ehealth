@@ -200,7 +200,28 @@ export const mockAppointments = [
   },
 ]
 
-export const mockLabResults = [
+type LabTest = {
+  testName: string
+  testCode: string
+  result: string | null
+  unit: string | null
+  referenceRange: string | null
+  isAbnormal: boolean | null
+  interpretation: string | null
+}
+
+type LabResult = {
+  id: string
+  status: string
+  orderDate: string
+  completedDate: string | null
+  urgency: string
+  provider: { firstName: string; lastName: string }
+  facility: string
+  tests: LabTest[]
+}
+
+export const mockLabResults: LabResult[] = [
   {
     id: 'lab-001',
     status: 'COMPLETED',
