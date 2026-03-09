@@ -1,12 +1,10 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
+  output: 'export',
+  trailingSlash: true,
+  basePath: process.env.NEXT_PUBLIC_BASE_PATH || '',
   images: {
-    domains: ['api.dicebear.com', 'images.unsplash.com'],
-  },
-  experimental: {
-    serverActions: {
-      allowedOrigins: ['localhost:3000'],
-    },
+    unoptimized: true,
   },
 }
 
